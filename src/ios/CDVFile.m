@@ -948,6 +948,33 @@ NSString* const kCDVFilesystemURLPrefix = @"cdvfile";
     }];
 }
 
+- (void)readFileChunk:(CDVInvokedUrlCommand*)command {
+    CDVFilesystemURL* localURI = [self fileSystemURLforArg:command.arguments[0]];
+    NSInteger start = [[command argumentAtIndex:1] integerValue];
+    NSInteger end = [[command argumentAtIndex:2] integerValue];
+
+    NSObject<CDVFileSystem> *fs = [self filesystemForURL:localURI];
+
+    __weak CDVFile* weakSelf = self;
+
+    [self.commandDelegate runInBackground:^ {
+        [fs readFileAtURL:localURI start:start end:end callback:^(NSData* data, NSString* mimeType, CDVFileError errorCode) {
+            CDVPluginResult* result = nil;
+            if (data != nil) {
+                NSString *base64EncodedData = [data base64EncodedStringWithOptions:0];
+                // TODO: !! Update below script !!
+                NSString *js = [NSString stringWithFormat: @"window.readBase64EncodedString('%@');", base64EncodedData];
+                [weakSelf executeJavascript:js];
+                result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsNSUInteger:data.length];
+            } else {
+                result = [CDVPluginResult resultWithStatus:CDVCommandStatus_IO_EXCEPTION messageAsInt:errorCode];
+            }
+
+            [weakSelf.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+        }];
+    }];
+}
+
 - (void)readAsBinaryString:(CDVInvokedUrlCommand*)command
 {
     CDVFilesystemURL* localURI = [self fileSystemURLforArg:command.arguments[0]];
@@ -1114,6 +1141,21 @@ NSString* const kCDVFilesystemURLPrefix = @"cdvfile";
         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Cannot resolve URL to a file"];
     }
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+}
+
+#pragma mark Helper for arbitrary Javascript execution
+- (void)executeJavascript:(NSString *)js {
+    __weak id<CDVWebViewEngineProtocol> webViewEngine_ = self.webViewEngine;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [webViewEngine_ evaluateJavaScript:js completionHandler:^(id obj, NSError* error) {
+            if (error != nil) {
+                // NSLog(@"[executeJavascript] ERROR: %@", error);
+            } else {
+                // NSLog(@"[executeJavascript] SUCCESS: %@", obj);
+            }
+        }];
+    });
 }
 
 @end
