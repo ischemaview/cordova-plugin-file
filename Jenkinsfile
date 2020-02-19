@@ -32,12 +32,6 @@ podTemplate(
                 stage('Install Dependencies') {
                     sh 'npm --no-color install --save-exact'
                 }
-                stage('Build') {
-                    sh 'npm --no-color run build'
-                }
-                stage('Test') {
-                    sh 'npm --no-color run test'
-                }
                 if (env.TAG_NAME) {
                     stage('Publish') {
                         sh 'npm --no-color publish'
