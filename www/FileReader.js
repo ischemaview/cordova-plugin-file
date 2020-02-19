@@ -75,6 +75,7 @@ function defineEvent (eventName) {
         this._realReader[eventName] = value;
     });
 }
+
 defineEvent('onloadstart');    // When the read starts.
 defineEvent('onprogress');     // While reading (and decoding) file or fileBlob data, and reporting partial file data (progress.loaded/progress.total)
 defineEvent('onload');         // When the read has successfully completed.
@@ -298,52 +299,52 @@ FileReader.prototype.readAsArrayBuffer = function (file) {
 /**
  * Read file and return the binary data length.
  *
- * @param file          {File} File object containing file properties
+ * @param file {File} File object containing file properties
  */
-FileReader.prototype.readFileChunk = function (file) {
+FileReader.prototype.readFile = function (file) {
     if (this._readyState === FileReader.LOADING) {
-      throw new FileError(FileError.INVALID_STATE_ERR);
+        throw new FileError(FileError.INVALID_STATE_ERR);
     }
     this._result = null;
     this._error = null;
     this._readyState = FileReader.LOADING;
     this._localURL = file.localURL;
     if (this.onloadstart) {
-      this.onloadstart(new ProgressEvent('loadstart', { target: this }));
+        this.onloadstart(new ProgressEvent('loadstart', {target: this}));
     }
     exec(
-      (chunkLength) => {
-        this._result = chunkLength;
-        if (typeof this.onload === 'function') {
-          this.onload(new ProgressEvent('load', { target: this }));
-        }
-        if (typeof this.onloadend === 'function') {
-          this.onloadend(new ProgressEvent('loadend', { target: this }));
-        }
-        this._readyState = FileReader.DONE;
-      },
-      (error) => {
-        if (this._readyState === FileReader.DONE) {
-          return;
-        }
-        this._result = null;
-        this._error = new FileError(error);
-        if (typeof this.onerror === 'function') {
-          this.onerror(new ProgressEvent('error', { target: this }));
-        }
-        if (typeof this.onloadend === 'function') {
-          this.onloadend(new ProgressEvent('loadend', { target: this }));
-        }
-        this._readyState = FileReader.DONE;
-      },
-      'File',
-      'readFileChunk',
-      [
-        file.localURL,
-        file.start,
-        file.end
-      ]
+        (response) => {
+            this._result = response;
+            if (typeof this.onload === 'function') {
+                this.onload(new ProgressEvent('load', {target: this}));
+            }
+            if (typeof this.onloadend === 'function') {
+                this.onloadend(new ProgressEvent('loadend', {target: this}));
+            }
+            this._readyState = FileReader.DONE;
+        },
+        (error) => {
+            if (this._readyState === FileReader.DONE) {
+                return;
+            }
+            this._result = null;
+            this._error = new FileError(error);
+            if (typeof this.onerror === 'function') {
+                this.onerror(new ProgressEvent('error', {target: this}));
+            }
+            if (typeof this.onloadend === 'function') {
+                this.onloadend(new ProgressEvent('loadend', {target: this}));
+            }
+            this._readyState = FileReader.DONE;
+        },
+        'File',
+        'readFile',
+        [
+            file.localURL,
+            file.start,
+            file.end
+        ]
     );
-  };
+};
 
 module.exports = FileReader;

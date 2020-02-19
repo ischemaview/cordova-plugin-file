@@ -1,10 +1,10 @@
 {
-  "name": "cordova-plugin-file",
-  "version": "6.0.3-dev",
-  "description": "Cordova File Plugin",
+  "name": "ischemaview-cordova-plugin-file",
+  "version": "0.0.1",
+  "description": "iSchemaview's Cordova File Plugin",
   "types": "./types/index.d.ts",
   "cordova": {
-    "id": "cordova-plugin-file",
+    "id": "ischemaview-cordova-plugin-file",
     "platforms": [
       "android",
       "browser",
@@ -54,5 +54,8 @@
     "eslint-plugin-node": "^5.0.0",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1"
+  },
+  "publishConfig": {
+    "registry": "https://nexus.infrastructure.rapid-sys.com/repository/npm-internal"
   }
 }

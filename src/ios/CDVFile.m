@@ -948,7 +948,7 @@ NSString* const kCDVFilesystemURLPrefix = @"cdvfile";
     }];
 }
 
-- (void)readFileChunk:(CDVInvokedUrlCommand*)command {
+- (void)readFile:(CDVInvokedUrlCommand*)command {
     CDVFilesystemURL* localURI = [self fileSystemURLforArg:command.arguments[0]];
     NSInteger start = [[command argumentAtIndex:1] integerValue];
     NSInteger end = [[command argumentAtIndex:2] integerValue];
@@ -962,8 +962,7 @@ NSString* const kCDVFilesystemURLPrefix = @"cdvfile";
             CDVPluginResult* result = nil;
             if (data != nil) {
                 NSString *base64EncodedData = [data base64EncodedStringWithOptions:0];
-                // TODO: !! Update below script !!
-                NSString *js = [NSString stringWithFormat: @"window.readBase64EncodedString('%@');", base64EncodedData];
+                NSString *js = [NSString stringWithFormat: @"window.onFileRead('%@');", base64EncodedData];
                 [weakSelf executeJavascript:js];
                 result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsNSUInteger:data.length];
             } else {

@@ -124,7 +124,7 @@ typedef int CDVFileError;
 - (void)readAsText:(CDVInvokedUrlCommand*)command;
 - (void)readAsDataURL:(CDVInvokedUrlCommand*)command;
 - (void)readAsArrayBuffer:(CDVInvokedUrlCommand*)command;
-- (void)readFileChunk:(CDVInvokedUrlCommand*)command;
+- (void)readFile:(CDVInvokedUrlCommand*)command;
 - (void)write:(CDVInvokedUrlCommand*)command;
 - (void)testFileExists:(CDVInvokedUrlCommand*)command;
 - (void)testDirectoryExists:(CDVInvokedUrlCommand*)command;
