@@ -1,6 +1,6 @@
 {
   "name": "ischemaview-cordova-plugin-file",
-  "version": "0.0.1",
+  "version": "6.1.0",
   "description": "iSchemaview's Cordova File Plugin",
   "types": "./types/index.d.ts",
   "cordova": {
