@@ -300,11 +300,17 @@ FileReader.prototype.readAsArrayBuffer = function (file) {
  * Read file and return the binary data length.
  *
  * @param file {File} File object containing file properties
+ * @param requestId {string} Id of the request
  */
-FileReader.prototype.readFile = function (file) {
+FileReader.prototype.readFile = function (file, requestId) {
+    if(!file  || !requestId) {
+        throw new FileError('file and requestId are required.');
+    }
+
     if (this._readyState === FileReader.LOADING) {
         throw new FileError(FileError.INVALID_STATE_ERR);
     }
+
     this._result = null;
     this._error = null;
     this._readyState = FileReader.LOADING;
@@ -342,7 +348,8 @@ FileReader.prototype.readFile = function (file) {
         [
             file.localURL,
             file.start,
-            file.end
+            file.end,
+            requestId
         ]
     );
 };
